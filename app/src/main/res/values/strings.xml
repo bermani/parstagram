@@ -6,4 +6,9 @@
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_up">Sign up</string>
     <string name="action_sign_up_prompt">No account? Press here to sign up</string>
+    <string name="text_home">Home</string>
+    <string name="text_create">New Post</string>
+    <string name="text_profile">Profile</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
