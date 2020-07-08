@@ -8,16 +8,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.isaacbfbu.parstagram.databinding.ActivityLoginBinding;
+import com.isaacbfbu.parstagram.databinding.ActivitySignupBinding;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
-public class LoginActivity extends AppCompatActivity {
+public class SignupActivity extends AppCompatActivity {
 
-    public static final String TAG = "LoginActivity";
+    public static final String TAG = "SignupActivity";
 
-    ActivityLoginBinding binding;
+    ActivitySignupBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,36 +28,41 @@ public class LoginActivity extends AppCompatActivity {
             goMainActivity();
         }
 
-        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        binding = com.isaacbfbu.parstagram.databinding.ActivitySignupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
     }
 
-    public void onClickLoginButton(View v) {
-        Log.i(TAG, "onClick login button");
+    public void onClickSignupButton(View v) {
+        Log.i(TAG, "onClick sign up button");
         String username = binding.etUsername.getText().toString();
         String password = binding.etPassword.getText().toString();
+        String confirmPassword = binding.etConfirmPassword.getText().toString();
 
-        Log.i(TAG, "Attempting to login user " + username);
+        if (!password.equals(confirmPassword)) {
+            Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ParseUser user = new ParseUser();
+        user.setUsername(username);
+        user.setPassword(password);
+
+        Log.i(TAG, "Attempting to sign up user " + username);
         binding.pbLoading.setVisibility(View.VISIBLE);
-        ParseUser.logInInBackground(username, password, new LogInCallback() {
+        user.signUpInBackground(new SignUpCallback() {
             @Override
-            public void done(ParseUser user, ParseException e) {
+            public void done(ParseException e) {
                 binding.pbLoading.setVisibility(View.INVISIBLE);
                 if (e != null) {
-                    Log.e(TAG, "Issue with login", e);
-                    Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Issue with sign up", e);
+                    Toast.makeText(SignupActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 // navigate to the main activity of the user has signed in properly
                 goMainActivity();
-                Toast.makeText(LoginActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignupActivity.this, "Success!", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    public void onClickSignupButton(View v) {
-        Intent i = new Intent(this, SignupActivity.class);
-        startActivity(i);
     }
 
     private void goMainActivity() {
