@@ -44,12 +44,19 @@ public class ComposeFragment extends Fragment {
     private File photoFile;
     public String photoFileName = "photo.jpg";
 
+    MainActivity activity;
+
     FragmentComposeBinding binding;
 
     public ComposeFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        activity = (MainActivity) getActivity();
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,7 +70,6 @@ public class ComposeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        binding.ivUploaded.setMinimumHeight(Resources.getSystem().getDisplayMetrics().widthPixels);
         binding.etDescription.setImeOptions(EditorInfo.IME_ACTION_DONE);
         binding.etDescription.setRawInputType(InputType.TYPE_CLASS_TEXT);
 
@@ -148,13 +154,15 @@ public class ComposeFragment extends Fragment {
     }
 
     private void savePost(String description, ParseUser currentUser, File photoFile) {
-        Post post = new Post();
+        final Post post = new Post();
         post.setDescription(description);
         post.setUser(currentUser);
         post.setImage(new ParseFile(photoFile));
+        activity.showProgressBar();
         post.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
+                activity.hideProgressBar();
                 if (e != null) {
                     Log.e(TAG, "Error while saving", e);
                     Toast.makeText(getActivity(), "Error while saving", Toast.LENGTH_SHORT).show();
@@ -165,6 +173,7 @@ public class ComposeFragment extends Fragment {
                 binding.etDescription.setText("");
                 binding.ivUploaded.setImageResource(0);
                 binding.ivCameraIcon.setVisibility(View.VISIBLE);
+                activity.goToProfile(post);
             }
         });
     }

@@ -71,30 +71,33 @@ public class HomeFragment extends Fragment {
         }
         rvPosts.setAdapter(adapter);
         rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
-        if (swipeContainer == null) {
-            swipeContainer = binding.swipeContainer;
-        }
+
+        swipeContainer = binding.swipeContainer;
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 adapter.clear();
-                queryPosts();
+                queryPosts(buildQuery());
             }
         });
         if (posts.size() == 0) {
-            queryPosts();
+            queryPosts(buildQuery());
         }
     }
 
-    protected void queryPosts() {
-        if (swipeContainer != null) {
-            swipeContainer.setRefreshing(true);
-        }
+    protected ParseQuery<Post> buildQuery() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
         query.setLimit(20);
         query.setSkip(posts.size());
         query.addDescendingOrder(Post.KEY_CREATED_AT);
+        return query;
+    }
+
+    private void queryPosts(ParseQuery<Post> query) {
+        if (swipeContainer != null) {
+            swipeContainer.setRefreshing(true);
+        }
         query.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> newPosts, ParseException e) {

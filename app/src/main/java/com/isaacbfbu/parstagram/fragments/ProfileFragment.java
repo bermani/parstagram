@@ -20,25 +20,20 @@ import java.util.List;
 
 public class ProfileFragment extends HomeFragment {
     @Override
-    protected void queryPosts() {
+    protected ParseQuery<Post> buildQuery() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
         query.whereEqualTo(Post.KEY_USER, ParseUser.getCurrentUser());
         query.setLimit(20);
+        query.setSkip(posts.size());
         query.addDescendingOrder(Post.KEY_CREATED_AT);
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> newPosts, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
-                    return;
-                }
-                for (Post post : newPosts) {
-                    Log.i(TAG, "Post: " + post.getDescription() + ", " + post.getUser().getUsername());
-                }
-                posts.addAll(newPosts);
-                adapter.notifyDataSetChanged();
-            }
-        });
+        return query;
+    }
+
+    public void pushPost(Post post) {
+        if (posts != null && adapter != null) {
+            posts.add(0, post);
+            adapter.notifyItemInserted(0);
+        }
     }
 }

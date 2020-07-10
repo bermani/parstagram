@@ -7,12 +7,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.isaacbfbu.parstagram.databinding.ActivityMainBinding;
-import com.isaacbfbu.parstagram.databinding.FragmentHomeBinding;
 import com.isaacbfbu.parstagram.databinding.ItemPostBinding;
 import com.isaacbfbu.parstagram.fragments.ComposeFragment;
 import com.isaacbfbu.parstagram.fragments.DetailFragment;
@@ -27,6 +27,12 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     FragmentManager fragmentManager;
 
+    MenuItem miActionProgressItem;
+
+    HomeFragment homeFragment;
+    ComposeFragment composeFragment;
+    ProfileFragment profileFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
 
         // define your fragments here
-        final Fragment homeFragment = new HomeFragment();
-        final Fragment composeFragment = new ComposeFragment();
-        final Fragment profileFragment = new ProfileFragment();
+        homeFragment = new HomeFragment();
+        composeFragment = new ComposeFragment();
+        profileFragment = new ProfileFragment();
 
         // handle navigation selection
         binding.bottomNavigation.setOnNavigationItemSelectedListener(
@@ -68,6 +74,26 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigation.setSelectedItemId(R.id.action_home);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        // Store instance of the menu item containing progress
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public void showProgressBar() {
+        // Show progress item
+        miActionProgressItem.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        miActionProgressItem.setVisible(false);
+    }
+
     public void goToDetail(Post post, ItemPostBinding binding) {
         DetailFragment fragment = DetailFragment.newInstance(post);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -79,6 +105,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void goBack() {
         fragmentManager.popBackStackImmediate();
+    }
+
+    public void goToProfile(Post post) {
+        profileFragment.pushPost(post);
+        binding.bottomNavigation.setSelectedItemId(R.id.action_profile);
     }
 
     public void logout(View v) {
