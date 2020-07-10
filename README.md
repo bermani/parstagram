@@ -1,8 +1,8 @@
-# Project 4 - *Name of App Here*
+# Project 4 - *Parstagram*
 
-**Name of your app** is a photo sharing app using Parse as its backend.
+**Parstagram** is a photo sharing app using Parse as its backend.
 
-Time spent: **X** hours spent in total
+Time spent: **18** hours spent in total
 
 ## User Stories
 
@@ -41,16 +41,18 @@ The following **additional** features are implemented:
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
-1.
-2.
+1. Optimal way to implement likes in order to avoid race conditions and improve efficiency
+2. Best practice way to find the size of a Relation within Parse for things like comments, likes, and follows
+3. Strategies for hashing passwords or making them more secure in some way
+4. How to get HTTPS image URLs from the Parse backend rather than HTTP
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='./walkthrough.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
-GIF created with [LiceCap](http://www.cockos.com/licecap/).
+GIF created with [Kap](https://getkap.co).
 
 ## Credits
 
@@ -61,7 +63,11 @@ List an 3rd party libraries, icons, graphics, or other assets you used in your a
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+There were a lot of technical challenges I had to overcome to create this app, such as implementing Fragments and FragmentManagers, syncing Fragment and Activity navigation, forming proper ParseQuerys, using a FileProvider to save image files, and more. I had to learn a lot of new material to complete this project, and had to learn it at a much faster rate than previous projects. The challenges were not only conceptual and technical, but also organizational. I originally had ProfileFragment as a subclass of HomeFragment, but when trying to implement the profile grid view I realized that it would be a huge mess to try to maintain the inheritance, as I would have had to
+- define my own abstract subclass of RecyclerView.Adapter so that both PostsAdapter and PostsGridAdapter could implement the methods addAll() and clear()
+- refactor all usages of the adapter within HomeFragment to use that subclass, but I couldn't replace all and would need to cast the adapter to PostsAdapter in certain instances
+- override the inner class PostsAdapter.ViewHolder within PostsGridAdapter, but there isn't a way to override inner classes within Java
+It was very frustrating for me that the classes were so similar and would lend themselves to an inheritance relationship but the high complexity of the situation made it impossible to do so in an elegant way. This app was challenge not only of my ability to implement functionality but to organize my codebase on a larger scale.
 
 ## License
 
