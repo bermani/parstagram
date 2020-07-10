@@ -9,28 +9,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.isaacbfbu.parstagram.EndlessRecyclerViewScrollListener;
 import com.isaacbfbu.parstagram.MainActivity;
 import com.isaacbfbu.parstagram.Post;
 import com.isaacbfbu.parstagram.PostsAdapter;
-import com.isaacbfbu.parstagram.R;
-import com.isaacbfbu.parstagram.databinding.FragmentComposeBinding;
 import com.isaacbfbu.parstagram.databinding.FragmentHomeBinding;
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,11 +32,11 @@ public class HomeFragment extends Fragment {
 
     public static final String TAG = "HomeFragment";
 
-    private FragmentHomeBinding binding;
+    protected FragmentHomeBinding binding;
     protected PostsAdapter adapter;
     protected List<Post> posts;
-    private SwipeRefreshLayout swipeContainer;
-    private EndlessRecyclerViewScrollListener scrollListener;
+    protected SwipeRefreshLayout swipeContainer;
+    protected EndlessRecyclerViewScrollListener scrollListener;
 
 
     MainActivity activity;
@@ -81,7 +74,7 @@ public class HomeFragment extends Fragment {
             adapter = new PostsAdapter(getContext(), posts);
         }
         rvPosts.setAdapter(adapter);
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext());
         rvPosts.setLayoutManager(manager);
 
         swipeContainer = binding.swipeContainer;
