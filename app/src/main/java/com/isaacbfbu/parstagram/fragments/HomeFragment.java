@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.isaacbfbu.parstagram.EndlessRecyclerViewScrollListener;
 import com.isaacbfbu.parstagram.MainActivity;
 import com.isaacbfbu.parstagram.Post;
 import com.isaacbfbu.parstagram.PostsAdapter;
@@ -42,6 +43,8 @@ public class HomeFragment extends Fragment {
     protected PostsAdapter adapter;
     protected List<Post> posts;
     private SwipeRefreshLayout swipeContainer;
+    private EndlessRecyclerViewScrollListener scrollListener;
+
 
     MainActivity activity;
 
@@ -78,18 +81,29 @@ public class HomeFragment extends Fragment {
             adapter = new PostsAdapter(getContext(), posts);
         }
         rvPosts.setAdapter(adapter);
-        rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        rvPosts.setLayoutManager(manager);
 
         swipeContainer = binding.swipeContainer;
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 adapter.clear();
-                queryPosts(buildQuery());
+                queryPosts(buildQuery(0));
             }
         });
+
+        scrollListener = new EndlessRecyclerViewScrollListener(manager) {
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                queryPosts(buildQuery(totalItemsCount));
+            }
+        };
+        rvPosts.addOnScrollListener(scrollListener);
+
         if (posts.size() == 0) {
-            queryPosts(buildQuery());
+            queryPosts(buildQuery(0));
         }
     }
 
@@ -98,11 +112,11 @@ public class HomeFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    protected ParseQuery<Post> buildQuery() {
+    protected ParseQuery<Post> buildQuery(int skip) {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
-        query.setLimit(20);
-        query.setSkip(posts.size());
+        query.setLimit(5);
+        query.setSkip(skip);
         query.addDescendingOrder(Post.KEY_CREATED_AT);
         return query;
     }

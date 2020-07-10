@@ -25,12 +25,12 @@ import java.util.List;
 
 public class ProfileFragment extends HomeFragment {
     @Override
-    protected ParseQuery<Post> buildQuery() {
+    protected ParseQuery<Post> buildQuery(int skip) {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
         query.whereEqualTo(Post.KEY_USER, ParseUser.getCurrentUser());
-        query.setLimit(20);
-        query.setSkip(posts.size());
+        query.setLimit(5);
+        query.setSkip(skip);
         query.addDescendingOrder(Post.KEY_CREATED_AT);
         return query;
     }
