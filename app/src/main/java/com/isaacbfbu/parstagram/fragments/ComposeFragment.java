@@ -17,6 +17,9 @@ import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -41,12 +44,12 @@ public class ComposeFragment extends Fragment {
 
     public static final String TAG = "ComposeFragment";
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
-    private File photoFile;
     public String photoFileName = "photo.jpg";
 
     MainActivity activity;
-
     FragmentComposeBinding binding;
+    private File photoFile;
+    MenuItem miProgressBar;
 
     public ComposeFragment() {
         // Required empty public constructor
@@ -55,7 +58,16 @@ public class ComposeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         activity = (MainActivity) getActivity();
+        setHasOptionsMenu(true);
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_compose, menu);
+        miProgressBar = menu.findItem(R.id.miActionProgress);
     }
 
     @Override
@@ -66,6 +78,8 @@ public class ComposeFragment extends Fragment {
 
         return binding.getRoot();
     }
+
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -154,15 +168,15 @@ public class ComposeFragment extends Fragment {
     }
 
     private void savePost(String description, ParseUser currentUser, File photoFile) {
+        showProgressBar();
         final Post post = new Post();
         post.setDescription(description);
         post.setUser(currentUser);
         post.setImage(new ParseFile(photoFile));
-        activity.showProgressBar();
         post.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                activity.hideProgressBar();
+                hideProgressBar();
                 if (e != null) {
                     Log.e(TAG, "Error while saving", e);
                     Toast.makeText(getActivity(), "Error while saving", Toast.LENGTH_SHORT).show();
@@ -176,6 +190,14 @@ public class ComposeFragment extends Fragment {
                 activity.goToProfile(post);
             }
         });
+    }
+
+    private void hideProgressBar() {
+        miProgressBar.setVisible(false);
+    }
+
+    private void showProgressBar() {
+        miProgressBar.setVisible(true);
     }
 
     @Override

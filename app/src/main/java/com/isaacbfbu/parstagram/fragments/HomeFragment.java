@@ -12,10 +12,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.isaacbfbu.parstagram.MainActivity;
 import com.isaacbfbu.parstagram.Post;
 import com.isaacbfbu.parstagram.PostsAdapter;
 import com.isaacbfbu.parstagram.R;
@@ -40,6 +43,8 @@ public class HomeFragment extends Fragment {
     protected List<Post> posts;
     private SwipeRefreshLayout swipeContainer;
 
+    MainActivity activity;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -55,6 +60,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        activity = (MainActivity) getActivity();
         super.onCreate(savedInstanceState);
     }
 
@@ -62,6 +68,8 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView rvPosts = binding.rvPosts;
+
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         if (posts == null) {
             posts = new ArrayList<>();
@@ -83,6 +91,11 @@ public class HomeFragment extends Fragment {
         if (posts.size() == 0) {
             queryPosts(buildQuery());
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     protected ParseQuery<Post> buildQuery() {

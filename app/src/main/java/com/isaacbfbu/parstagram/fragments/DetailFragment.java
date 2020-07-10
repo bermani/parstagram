@@ -4,8 +4,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NavUtils;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,6 +29,8 @@ import org.parceler.Parcels;
 public class DetailFragment extends Fragment {
 
     private FragmentDetailBinding binding;
+
+    MainActivity activity;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,6 +65,8 @@ public class DetailFragment extends Fragment {
         if (getArguments() != null) {
             post = Parcels.unwrap(getArguments().getParcelable(POST));
         }
+        activity = (MainActivity) getActivity();
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -75,13 +81,6 @@ public class DetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        binding.btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity) getActivity()).goBack();
-            }
-        });
 
         // Bind post data to view elements
         binding.post.tvDescription.setText(post.getDescription());
