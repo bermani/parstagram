@@ -12,6 +12,8 @@ import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.isaacbfbu.parstagram.databinding.ActivityMainBinding;
+import com.isaacbfbu.parstagram.databinding.FragmentHomeBinding;
+import com.isaacbfbu.parstagram.databinding.ItemPostBinding;
 import com.isaacbfbu.parstagram.fragments.ComposeFragment;
 import com.isaacbfbu.parstagram.fragments.DetailFragment;
 import com.isaacbfbu.parstagram.fragments.HomeFragment;
@@ -66,9 +68,10 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigation.setSelectedItemId(R.id.action_home);
     }
 
-    public void goToDetail(Post post) {
+    public void goToDetail(Post post, ItemPostBinding binding) {
         DetailFragment fragment = DetailFragment.newInstance(post);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         transaction.replace(R.id.flContainer, fragment);
         transaction.addToBackStack(null);
         transaction.commit();

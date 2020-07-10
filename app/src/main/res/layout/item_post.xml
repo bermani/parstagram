@@ -14,7 +14,8 @@
         android:text="isaac"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:transitionName="tvUsername"/>
 
     <ImageView
         android:id="@+id/ivPost"
@@ -25,7 +26,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvUsername"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/avatars"
+        android:transitionName="ivPost"/>
 
     <TextView
         android:id="@+id/tvDescription"
@@ -35,7 +37,8 @@
         android:layout_marginTop="8dp"
         android:text="nice one"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivPost" />
+        app:layout_constraintTop_toBottomOf="@+id/ivPost"
+        android:transitionName="tvDescription"/>
 
     <TextView
         android:id="@+id/tvDate"
@@ -46,5 +49,6 @@
         android:layout_marginBottom="8dp"
         android:text="8m ago"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/tvDescription"
+        android:transitionName="tvDate"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
