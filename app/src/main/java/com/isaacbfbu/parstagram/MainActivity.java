@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -12,13 +13,17 @@ import android.view.View;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.isaacbfbu.parstagram.databinding.ActivityMainBinding;
 import com.isaacbfbu.parstagram.fragments.ComposeFragment;
+import com.isaacbfbu.parstagram.fragments.DetailFragment;
 import com.isaacbfbu.parstagram.fragments.HomeFragment;
 import com.isaacbfbu.parstagram.fragments.ProfileFragment;
 import com.parse.ParseUser;
 
+import java.util.Stack;
+
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
+    FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        final FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
 
         // define your fragments here
         final Fragment homeFragment = new HomeFragment();
@@ -51,12 +56,26 @@ public class MainActivity extends AppCompatActivity {
                                 fragment = profileFragment;
                                 break;
                         }
-                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                        FragmentTransaction transaction = fragmentManager.beginTransaction();
+                        transaction.replace(R.id.flContainer, fragment);
+                        transaction.commit();
                         return true;
                     }
                 });
         // Set default selection
         binding.bottomNavigation.setSelectedItemId(R.id.action_home);
+    }
+
+    public void goToDetail(Post post) {
+        DetailFragment fragment = DetailFragment.newInstance(post);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.flContainer, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public void goBack() {
+        fragmentManager.popBackStackImmediate();
     }
 
     public void logout(View v) {

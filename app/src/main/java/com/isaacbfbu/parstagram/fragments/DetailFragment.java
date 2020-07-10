@@ -1,11 +1,22 @@
 package com.isaacbfbu.parstagram.fragments;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.bumptech.glide.Glide;
+import com.isaacbfbu.parstagram.MainActivity;
+import com.isaacbfbu.parstagram.Post;
 import com.isaacbfbu.parstagram.R;
+import com.isaacbfbu.parstagram.databinding.FragmentDetailBinding;
+import com.parse.ParseFile;
+
+import org.parceler.Parcels;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,29 +26,27 @@ import com.isaacbfbu.parstagram.R;
  */
 public class DetailFragment extends Fragment {
 
+    private FragmentDetailBinding binding;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String POST = "post";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Post post;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param post post parameter.
      * @return A new instance of fragment DetailFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DetailFragment newInstance(String param1, String param2) {
+    public static DetailFragment newInstance(Post post) {
         DetailFragment fragment = new DetailFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelable(POST, Parcels.wrap(post));
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,8 +59,7 @@ public class DetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            post = Parcels.unwrap(getArguments().getParcelable(POST));
         }
     }
 
@@ -59,6 +67,31 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detail, container, false);
+        binding = FragmentDetailBinding.inflate(inflater, container, false);
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        binding.btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity) getActivity()).goBack();
+            }
+        });
+
+        // Bind post data to view elements
+        binding.post.tvDescription.setText(post.getDescription());
+        binding.post.tvUsername.setText(post.getUser().getUsername());
+        binding.post.tvDate.setText(post.getDateString());
+
+
+        ParseFile image = post.getImage();
+        if (image != null) {
+            Glide.with(getActivity()).load(image.getUrl()).into(binding.post.ivPost);
+        }
     }
 }
