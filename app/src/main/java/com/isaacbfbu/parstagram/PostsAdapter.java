@@ -85,7 +85,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             binding.ivPost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ((MainActivity) context).goToDetail(post, binding);
+                    ((MainActivity) context).goToDetail(post);
                 }
             });
 
@@ -112,7 +112,13 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                             post.saveInBackground();
                         }
                     });
+                }
+            });
 
+            binding.tvUsername.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((MainActivity) context).goToUserProfile(post.getUser());
                 }
             });
         }

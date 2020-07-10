@@ -16,9 +16,15 @@ import com.isaacbfbu.parstagram.MainActivity;
 import com.isaacbfbu.parstagram.Post;
 import com.isaacbfbu.parstagram.R;
 import com.isaacbfbu.parstagram.databinding.FragmentDetailBinding;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,11 +38,8 @@ public class DetailFragment extends Fragment {
 
     MainActivity activity;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String POST = "post";
 
-    // TODO: Rename and change types of parameters
     private Post post;
 
     /**
@@ -46,7 +49,6 @@ public class DetailFragment extends Fragment {
      * @param post post parameter.
      * @return A new instance of fragment DetailFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static DetailFragment newInstance(Post post) {
         DetailFragment fragment = new DetailFragment();
         Bundle args = new Bundle();
@@ -86,11 +88,59 @@ public class DetailFragment extends Fragment {
         binding.post.tvDescription.setText(post.getDescription());
         binding.post.tvUsername.setText(post.getUser().getUsername());
         binding.post.tvDate.setText(post.getDateString());
+        binding.post.tvLikes.setText(post.getLikes() + " likes");
 
+        post.getUsersLiked().getQuery().findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                ArrayList<String> ids = new ArrayList<>();
+                for (ParseUser object : objects) {
+                    ids.add(object.getObjectId());
+                }
+                if (ids.contains(ParseUser.getCurrentUser().getObjectId())) {
+                    binding.post.ivHeart.setImageResource(R.drawable.ufi_heart_active);
+                } else {
+                    binding.post.ivHeart.setImageResource(R.drawable.ufi_heart);
+                }
+            }
+        });
 
         ParseFile image = post.getImage();
         if (image != null) {
-            Glide.with(getActivity()).load(image.getUrl()).into(binding.post.ivPost);
+            Glide.with(activity).load(image.getUrl()).into(binding.post.ivPost);
         }
+
+        binding.post.ivHeart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                post.getUsersLiked().getQuery().findInBackground(new FindCallback<ParseUser>() {
+                    @Override
+                    public void done(List<ParseUser> objects, ParseException e) {
+                        ArrayList<String> ids = new ArrayList<>();
+                        for (ParseUser object : objects) {
+                            ids.add(object.getObjectId());
+                        }
+                        if (ids.contains(ParseUser.getCurrentUser().getObjectId())) {
+                            post.setLikes(post.getLikes() - 1);
+                            post.getUsersLiked().remove(ParseUser.getCurrentUser());
+                            binding.post.ivHeart.setImageResource(R.drawable.ufi_heart);
+                        } else {
+                            post.setLikes(post.getLikes() + 1);
+                            post.getUsersLiked().add(ParseUser.getCurrentUser());
+                            binding.post.ivHeart.setImageResource(R.drawable.ufi_heart_active);
+                        }
+                        binding.post.tvLikes.setText(post.getLikes() + " likes");
+                        post.saveInBackground();
+                    }
+                });
+            }
+        });
+
+        binding.post.tvUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activity.goToUserProfile(post.getUser());
+            }
+        });
     }
 }

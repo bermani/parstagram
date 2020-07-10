@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigation.setSelectedItemId(R.id.action_home);
     }
 
-    public void goToDetail(Post post, ItemPostBinding binding) {
+    public void goToDetail(Post post) {
         DetailFragment fragment = DetailFragment.newInstance(post);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
@@ -101,6 +101,15 @@ public class MainActivity extends AppCompatActivity {
     public void goToProfile(Post post) {
         profileFragment.pushPost(post);
         binding.bottomNavigation.setSelectedItemId(R.id.action_profile);
+    }
+
+    public void goToUserProfile(ParseUser user) {
+        Fragment fragment = ProfileFragment.newInstance(user);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        transaction.replace(R.id.flContainer, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     public void goBack() {
