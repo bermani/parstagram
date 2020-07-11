@@ -65,8 +65,9 @@ List an 3rd party libraries, icons, graphics, or other assets you used in your a
 
 There were a lot of technical challenges I had to overcome to create this app, such as implementing Fragments and FragmentManagers, syncing Fragment and Activity navigation, forming proper ParseQuerys, using a FileProvider to save image files, and more. I had to learn a lot of new material to complete this project, and had to learn it at a much faster rate than previous projects. The challenges were not only conceptual and technical, but also organizational. I originally had ProfileFragment as a subclass of HomeFragment, but when trying to implement the profile grid view I realized that it would be a huge mess to try to maintain the inheritance, as I would have had to
 - define my own abstract subclass of RecyclerView.Adapter so that both PostsAdapter and PostsGridAdapter could implement the methods addAll() and clear()
-- refactor all usages of the adapter within HomeFragment to use that subclass, but I couldn't replace all and would need to cast the adapter to PostsAdapter in certain instances
+- refactor the usages of the adapter within HomeFragment to use that subclass, but I couldn't replace every single one and would need to cast the adapter to PostsAdapter in certain instances
 - override the inner class PostsAdapter.ViewHolder within PostsGridAdapter, but there isn't a way to override inner classes within Java
+
 It was very frustrating for me that the classes were so similar and would lend themselves to an inheritance relationship but the high complexity of the situation made it impossible to do so in an elegant way. This app was challenge not only of my ability to implement functionality but to organize my codebase on a larger scale.
 
 ## License
